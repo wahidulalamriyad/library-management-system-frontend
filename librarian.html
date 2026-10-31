@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Librarian dashboard of the BookNest Library">
+  <title>Librarian Dashboard | BookNest Library</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo">Book<span>Nest</span></a>
+    <div class="user-info">
+      <span class="badge librarian">Librarian</span>
+      <span>Welcome, Sadia Akter</span>
+      <a href="index.html" class="btn btn-small btn-light">Logout</a>
+    </div>
+  </header>
+
+  <nav class="topnav">
+    <button type="button" id="nav-catalogSection" onclick="showSection('catalogSection')">Manage Books</button>
+    <button type="button" id="nav-issueSection" onclick="showSection('issueSection')">Issue Book</button>
+    <button type="button" id="nav-returnSection" onclick="showSection('returnSection')">Return &amp; Fine</button>
+    <button type="button" id="nav-overdueSection" onclick="showSection('overdueSection')">Overdue Report</button>
+  </nav>
+
+  <main class="container">
+
+    <!-- =========================================================
+         MANAGE BOOKS: Create, Read, Update, Delete and Search
+         ========================================================= -->
+    <section id="catalogSection" class="page-section">
+      <h2 class="page-title">Manage Books</h2>
+      <p class="page-subtitle">Add new books, edit their details, remove them, and search the catalogue.</p>
+
+      <div id="bookMessage" class="message"></div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3 id="bookFormTitle">Add New Book</h3>
+            <form id="bookForm" onsubmit="return saveBook()">
+              <fieldset>
+                <legend>Book Details</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="bookTitle">Title:</label></td>
+                    <td>
+                      <input type="text" id="bookTitle" placeholder="Book title">
+                      <span class="error" id="bookTitleError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="bookAuthor">Author:</label></td>
+                    <td>
+                      <input type="text" id="bookAuthor" placeholder="Author name">
+                      <span class="error" id="bookAuthorError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="bookCategory">Category:</label></td>
+                    <td>
+                      <select id="bookCategory">
+                        <option value="">-- Select Category --</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Science">Science</option>
+                        <option value="Business">Business</option>
+                        <option value="History">History</option>
+                        <option value="Literature">Literature</option>
+                      </select>
+                      <span class="error" id="bookCategoryError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="bookIsbn">ISBN:</label></td>
+                    <td>
+                      <input type="text" id="bookIsbn" placeholder="13 digits">
+                      <span class="error" id="bookIsbnError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="bookYear">Year:</label></td>
+                    <td>
+                      <input type="number" id="bookYear" placeholder="e.g. 2020">
+                      <span class="error" id="bookYearError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="bookCopies">Copies:</label></td>
+                    <td>
+                      <input type="number" id="bookCopies" min="1" max="50" placeholder="1 - 50">
+                      <span class="error" id="bookCopiesError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="bookShelf">Shelf:</label></td>
+                    <td>
+                      <input type="text" id="bookShelf" placeholder="e.g. A-1">
+                      <span class="error" id="bookShelfError"></span>
+                    </td>
+                  </tr>
+                </table>
+              </fieldset>
+              <input type="submit" id="bookSaveButton" class="btn" value="Add Book">
+              <button type="button" class="btn btn-secondary" onclick="resetBookForm()">Cancel</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-wide">
+          <div class="card">
+            <h3>Book Catalogue</h3>
+            <div class="search-bar">
+              <input type="text" id="bookSearch" placeholder="Search by title, author, ISBN or id..." onkeyup="renderBooks()">
+              <select id="bookCategoryFilter" onchange="renderBooks()">
+                <option value="All">All categories</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Science">Science</option>
+                <option value="Business">Business</option>
+                <option value="History">History</option>
+                <option value="Literature">Literature</option>
+              </select>
+              <select id="bookStockFilter" onchange="renderBooks()">
+                <option value="All">Any stock</option>
+                <option value="In">On the shelf</option>
+                <option value="Out">All copies on loan</option>
+              </select>
+            </div>
+            <p class="result-count" id="bookCount"></p>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th><th>Book</th><th>Category</th><th>ISBN / Year</th>
+                    <th>Available</th><th>Shelf</th><th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="bookTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         UNIQUE FEATURE 1: ISSUE A BOOK TO A STUDENT
+         ========================================================= -->
+    <section id="issueSection" class="page-section">
+      <h2 class="page-title">Issue Book</h2>
+      <p class="page-subtitle">Lend a book to a student. The due date follows the library rules.</p>
+
+      <div id="issueMessage" class="message"></div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3>New loan</h3>
+            <form id="issueForm" onsubmit="return issueBook()">
+              <fieldset>
+                <legend>Loan Details</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="loanBook">Book:</label></td>
+                    <td>
+                      <!-- The options are added by JavaScript (createElement + appendChild) -->
+                      <select id="loanBook" onchange="showIssueInfo()"></select>
+                      <span class="error" id="loanBookError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="loanStudent">Student:</label></td>
+                    <td>
+                      <select id="loanStudent" onchange="showIssueInfo()"></select>
+                      <span class="error" id="loanStudentError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="issueDate">Issue date:</label></td>
+                    <td>
+                      <input type="date" id="issueDate" onchange="updateDueDate()">
+                      <span class="error" id="issueDateError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="issueDueDate">Due date:</label></td>
+                    <td>
+                      <input type="date" id="issueDueDate" readonly>
+                      <span class="hint" id="loanRuleHint"></span>
+                    </td>
+                  </tr>
+                </table>
+              </fieldset>
+              <input type="submit" class="btn btn-success" value="Issue Book">
+            </form>
+            <div class="result-box" id="issueInfo">Choose a book and a student to see the details.</div>
+          </div>
+        </div>
+
+        <div class="col-wide">
+          <div class="card">
+            <h3>Books on loan now</h3>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Loan</th><th>Book</th><th>Student</th><th>Issued</th><th>Due</th></tr>
+                </thead>
+                <tbody id="activeLoansBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         UNIQUE FEATURE 2: RETURN A BOOK AND CALCULATE THE FINE
+         ========================================================= -->
+    <section id="returnSection" class="page-section">
+      <h2 class="page-title">Return Book &amp; Fine</h2>
+      <p class="page-subtitle">Take a book back and work out the late fine.</p>
+
+      <div id="returnMessage" class="message"></div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3>Return a book</h3>
+            <form id="returnForm" onsubmit="return returnBook()">
+              <fieldset>
+                <legend>Return Details</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="returnLoan">Loan:</label></td>
+                    <td>
+                      <select id="returnLoan" onchange="calculateFine()"></select>
+                      <span class="error" id="returnLoanError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="returnDate">Return date:</label></td>
+                    <td>
+                      <input type="date" id="returnDate" onchange="calculateFine()">
+                      <span class="error" id="returnDateError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Condition:</td>
+                    <td>
+                      <input type="checkbox" id="returnDamaged" onchange="calculateFine()">
+                      <label for="returnDamaged" class="option-label">Book is damaged (+100 Tk)</label>
+                    </td>
+                  </tr>
+                </table>
+              </fieldset>
+              <input type="submit" class="btn btn-success" value="Confirm Return">
+            </form>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card">
+            <h3>Fine calculation</h3>
+            <div class="result-box" id="fineBox">Choose a loan to calculate the fine.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Recently returned</h3>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr><th>Loan</th><th>Book</th><th>Student</th><th>Due</th><th>Returned</th><th>Fine (Tk)</th></tr>
+            </thead>
+            <tbody id="returnedBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         UNIQUE FEATURE 3: OVERDUE BOOKS REPORT
+         ========================================================= -->
+    <section id="overdueSection" class="page-section">
+      <h2 class="page-title">Overdue Report</h2>
+      <p class="page-subtitle">Loans that have passed their due date, with the fine so far.</p>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-number" id="overdueCount">0</div><div class="stat-label">Overdue loans</div></div>
+        <div class="stat-card"><div class="stat-number" id="overdueFine">0</div><div class="stat-label">Fines pending (Tk)</div></div>
+        <div class="stat-card"><div class="stat-number" id="overdueWorst">0</div><div class="stat-label">Most days late</div></div>
+      </div>
+
+      <div class="card">
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr><th>Loan</th><th>Book</th><th>Student</th><th>Due date</th><th>Days late</th><th>Fine so far</th><th>Level</th><th>Reminder</th></tr>
+            </thead>
+            <tbody id="overdueBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    &copy; 2026 BookNest Library &middot; CSC 3215 Web Technologies
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/librarian.js"></script>
+</body>
+</html>

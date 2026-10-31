@@ -1,0 +1,990 @@
+/* =====================================================================
+   BookNest Library Management System  -  style.css
+   ---------------------------------------------------------------------
+   ONE external style sheet, linked from the <head> of every page
+   (Lecture 02: "Inserting CSS - External CSS is recommended").
+   This file contains only CSS, no HTML tags.
+
+   Sections in this file:
+     1. Reset and page defaults       6. Tables
+     2. Header and navigation bar     7. Badges and messages
+     3. Layout (container, cards)     8. Dashboard widgets
+     4. Forms                         9. Home, login and register pages
+     5. Buttons                      10. Footer
+   ===================================================================== */
+
+
+/* ---------------------------------------------------------------------
+   1. RESET AND PAGE DEFAULTS
+   Universal selector reset (Lecture 02: "* { margin: 0; }")
+   box-sizing: border-box makes width include padding and border
+   --------------------------------------------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;  /* ends with a generic family */
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333333;
+  background-color: #F4F2F8;
+}
+
+h1, h2, h3 {
+  line-height: 1.3;
+  color: #1B1F3B;
+}
+
+a {
+  color: #663399;
+}
+
+a:hover {
+  color: #8E6CC8;
+}
+
+
+/* ---------------------------------------------------------------------
+   2. HEADER AND NAVIGATION BAR
+   Classic website layout: header, navigation, content, footer
+   --------------------------------------------------------------------- */
+.header {
+  background-color: #1B1F3B;
+  color: white;
+  padding: 14px 24px;
+  display: flex;                  /* Flexbox: logo left, user info right */
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.logo span {
+  color: #C9A7F5;                 /* "Nest" in light purple */
+}
+
+.logo:hover {
+  color: white;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+}
+
+/* The navigation bar sticks to the top while scrolling
+   (Lecture 02: position: sticky, Exercise 2: Navigation bar) */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 10;                    /* stays above the page content */
+  background-color: #2B2F55;
+  padding: 0 16px;
+  overflow-x: auto;               /* scroll sideways on small screens */
+  white-space: nowrap;
+}
+
+.topnav a,
+.topnav button {
+  display: inline-block;          /* side by side, but padding works */
+  color: #F2F2F2;
+  background-color: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 14px 16px;
+  text-decoration: none;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: background-color 0.3s;
+}
+
+.topnav a:hover,
+.topnav button:hover {
+  background-color: #3D4270;
+  color: white;
+}
+
+/* The current section gets the "active" class from JavaScript */
+.topnav a.active,
+.topnav button.active {
+  border-bottom: 3px solid #C9A7F5;
+  background-color: #3D4270;
+  color: white;
+}
+
+
+/* ---------------------------------------------------------------------
+   3. LAYOUT: CONTAINER, SECTIONS AND CARDS
+   max-width + margin: 0 auto keeps the page centred on any screen
+   --------------------------------------------------------------------- */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  min-height: 75vh;               /* keeps the footer near the bottom on short pages */
+}
+
+/* Every page section is hidden until showSection() displays it */
+.page-section {
+  display: none;
+}
+
+.page-title {
+  margin-bottom: 4px;
+  font-size: 1.6rem;
+}
+
+.page-subtitle {
+  color: #666666;
+  margin-bottom: 20px;
+}
+
+/* A white box with rounded corners and a soft shadow (Exercise 1: Profile card) */
+.card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card h3 {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #EEEAF5;
+}
+
+/* Two columns side by side; they wrap onto new lines on small screens */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.col {
+  flex: 1;
+  min-width: 300px;
+}
+
+.col-wide {
+  flex: 2;
+  min-width: 300px;
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: #777777;
+}
+
+
+/* ---------------------------------------------------------------------
+   4. FORMS
+   <fieldset>, <legend> and a <table> to line up labels and fields
+   (Lecture 01: worked example - the patient registration form)
+   --------------------------------------------------------------------- */
+fieldset {
+  border: 1px solid #D8D0E8;
+  border-radius: 8px;
+  padding: 12px 16px 16px 16px;
+  margin-bottom: 16px;
+}
+
+legend {
+  font-weight: bold;
+  color: #663399;
+  padding: 0 8px;
+}
+
+.form-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.form-table td {
+  padding: 6px 4px;
+  vertical-align: top;
+}
+
+.form-table td:first-child {
+  width: 35%;
+  padding-top: 12px;
+}
+
+label {
+  font-weight: 600;
+  color: #444444;
+}
+
+/* The labels next to radio buttons and checkboxes are normal weight */
+.option-label {
+  font-weight: normal;
+  margin-right: 12px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+input[type="tel"],
+select,
+textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #C8C3D4;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  background-color: white;
+}
+
+/* :focus keeps the selected field clearly visible for keyboard users */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid #8E6CC8;
+  border-color: #8E6CC8;
+}
+
+textarea {
+  resize: none;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  margin-right: 4px;
+  accent-color: #663399;
+}
+
+/* Red error text shown next to a field by JavaScript validation */
+.error {
+  display: block;
+  color: #C62828;
+  font-size: 0.85rem;
+  min-height: 1em;
+}
+
+.form-buttons {
+  margin-top: 8px;
+}
+
+
+/* ---------------------------------------------------------------------
+   5. BUTTONS
+   :hover with a transition (Lecture 02: Hover effects and transitions)
+   --------------------------------------------------------------------- */
+.btn {
+  display: inline-block;
+  background-color: #663399;
+  color: white;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #8E6CC8;
+  color: white;
+}
+
+.btn:focus {
+  outline: 3px solid orange;
+}
+
+.btn:disabled {
+  background-color: #BBBBBB;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: #6C757D;
+}
+
+.btn-secondary:hover {
+  background-color: #868E96;
+}
+
+.btn-success {
+  background-color: #2E7D32;
+}
+
+.btn-success:hover {
+  background-color: #43A047;
+}
+
+.btn-danger {
+  background-color: #C62828;
+}
+
+.btn-danger:hover {
+  background-color: #E53935;
+}
+
+.btn-light {
+  background-color: white;
+  color: #1B1F3B;
+}
+
+.btn-light:hover {
+  background-color: #EEEAF5;
+  color: #1B1F3B;
+}
+
+.btn-small {
+  padding: 4px 12px;
+  font-size: 0.85rem;
+}
+
+
+/* ---------------------------------------------------------------------
+   6. TABLES
+   <table>, <thead>, <tbody>, <th>, <td> for tabular data
+   --------------------------------------------------------------------- */
+.table-wrapper {
+  overflow-x: auto;              /* wide tables scroll inside the card */
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.data-table th {
+  background-color: #663399;
+  color: white;
+  text-align: left;
+  padding: 10px;
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid #EEEAF5;
+}
+
+/* Ids and action buttons never break onto two lines */
+.data-table td:first-child,
+.data-table td:last-child {
+  white-space: nowrap;
+}
+
+/* Striped rows with a pseudo-class */
+.data-table tbody tr:nth-child(even) {
+  background-color: #FAF8FD;
+}
+
+.data-table tbody tr:hover {
+  background-color: #F0EAFA;
+}
+
+.data-table td .btn {
+  margin: 2px;
+}
+
+.empty-row {
+  text-align: center;
+  color: #888888;
+  padding: 20px;
+}
+
+/* The search box and filters above a table */
+.search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.search-bar input {
+  flex: 2;
+  min-width: 200px;
+}
+
+.search-bar select {
+  flex: 1;
+  min-width: 150px;
+}
+
+.result-count {
+  font-size: 0.85rem;
+  color: #666666;
+  margin-bottom: 8px;
+}
+
+
+/* ---------------------------------------------------------------------
+   7. BADGES AND MESSAGES
+   --------------------------------------------------------------------- */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: bold;
+  color: white;
+  background-color: #6C757D;
+  white-space: nowrap;
+}
+
+.badge.admin     { background-color: #C62828; }
+.badge.librarian { background-color: #1565C0; }
+.badge.student   { background-color: #2E7D32; }
+.badge.visitor   { background-color: #EF6C00; }
+
+.badge.green  { background-color: #2E7D32; }
+.badge.orange { background-color: #EF6C00; }
+.badge.red    { background-color: #C62828; }
+.badge.blue   { background-color: #1565C0; }
+.badge.grey   { background-color: #6C757D; }
+
+/* A message box; hidden until JavaScript shows it */
+.message {
+  display: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  border-left: 5px solid;
+}
+
+.message.success {
+  background-color: #E8F5E9;
+  border-color: #2E7D32;
+  color: #1B5E20;
+}
+
+.message.error {
+  background-color: #FFEBEE;
+  border-color: #C62828;
+  color: #B71C1C;
+}
+
+.message.info {
+  background-color: #E3F2FD;
+  border-color: #1565C0;
+  color: #0D47A1;
+}
+
+
+/* ---------------------------------------------------------------------
+   8. DASHBOARD WIDGETS
+   --------------------------------------------------------------------- */
+
+/* Statistic tiles laid out with CSS Grid (Lecture 02: Looking ahead) */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-left: 6px solid #663399;
+  transition: transform 0.3s;
+}
+
+.stat-card:hover {
+  transform: scale(1.03);
+}
+
+.stat-card .stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1B1F3B;
+}
+
+.stat-card .stat-label {
+  color: #666666;
+  font-size: 0.9rem;
+}
+
+/* Horizontal bar chart: JavaScript sets each bar's width with style.width */
+.bar-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.bar-label {
+  width: 140px;
+  font-size: 0.9rem;
+}
+
+.bar-track {
+  flex: 1;
+  background-color: #EEEAF5;
+  border-radius: 6px;
+  height: 22px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  width: 0;
+  background-color: #663399;
+  border-radius: 6px;
+  transition: width 0.6s;
+}
+
+.bar-value {
+  width: 50px;
+  text-align: right;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+/* Progress bar for the student's reading goal */
+.progress-track {
+  background-color: #EEEAF5;
+  border-radius: 12px;
+  height: 28px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background-color: #2E7D32;
+  color: white;
+  font-weight: bold;
+  font-size: 0.85rem;
+  text-align: center;
+  line-height: 28px;
+  transition: width 0.6s;
+}
+
+/* Notice board: a fixed height with a scroll bar
+   (Lecture 02: Exercise 4 - overflow-y: auto, coloured border-left) */
+.notice-board {
+  height: 380px;
+  overflow-y: auto;
+  border: 1px solid #EEEAF5;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #FCFBFE;
+}
+
+.log-item {
+  background-color: white;
+  border-left: 5px solid #663399;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.log-item .log-time {
+  font-size: 0.8rem;
+  color: #888888;
+}
+
+/* A result box used by the calculators and checkers */
+.result-box {
+  background-color: #F7F3FC;
+  border: 2px dashed #C9A7F5;
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.result-box .big {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #663399;
+}
+
+/* Reminder cards for a student's borrowed books */
+.reminder {
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  border-left: 8px solid #2E7D32;
+  background-color: #F1F8F1;
+}
+
+.reminder h4 {
+  margin-bottom: 2px;
+}
+
+
+/* ---------------------------------------------------------------------
+   9. HOME, LOGIN AND REGISTER PAGES
+   --------------------------------------------------------------------- */
+
+/* Hero area with a background colour and centred text */
+.hero {
+  background-color: #1B1F3B;
+  color: white;
+  text-align: center;
+  padding: 70px 20px;
+}
+
+.hero h1 {
+  color: white;
+  font-size: 2.6rem;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 1.15rem;
+  color: #D9D4E8;
+  max-width: 650px;
+  margin: 0 auto 24px auto;
+}
+
+.hero .btn {
+  margin: 4px;
+  padding: 12px 28px;
+}
+
+.section-heading {
+  text-align: center;
+  margin: 10px 0 24px 0;
+}
+
+/* Four role cards on the home page */
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.role-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-top: 6px solid #663399;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.role-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.role-card.admin     { border-top-color: #C62828; }
+.role-card.librarian { border-top-color: #1565C0; }
+.role-card.student   { border-top-color: #2E7D32; }
+.role-card.visitor   { border-top-color: #EF6C00; }
+
+.role-card h3 {
+  margin-bottom: 8px;
+}
+
+.role-card ul {
+  margin: 10px 0 0 20px;
+  font-size: 0.92rem;
+}
+
+/* The login and register boxes: centred, never wider than the screen */
+.auth-box {
+  max-width: 480px;
+  margin: 40px auto;
+}
+
+.auth-box.wide {
+  max-width: 720px;
+}
+
+.demo-accounts {
+  font-size: 0.88rem;
+}
+
+.demo-accounts td {
+  padding: 2px 8px 2px 0;
+}
+
+
+/* ---------------------------------------------------------------------
+   10. FOOTER
+   --------------------------------------------------------------------- */
+.footer {
+  background-color: #1B1F3B;
+  color: #BBB6CC;
+  text-align: center;
+  padding: 16px;
+  margin-top: 30px;
+  font-size: 0.88rem;
+}
+
+/* The card below the role cards on the home page */
+.info-card {
+  margin-top: 30px;
+}
+
+/* Reading goal (student page) */
+.goal-progress-heading {
+  margin-top: 24px;
+}
+
+.read-list {
+  margin: 0 0 14px 22px;
+}
+
+.read-list li {
+  padding: 3px 0;
+}
+
+/* Building map (visitor page): JavaScript highlights one floor */
+.floor {
+  border: 2px solid #D8D0E8;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 8px;
+  background-color: #FAF8FD;
+  transition: background-color 0.4s, transform 0.4s;
+}
+
+
+/* =====================================================================
+   REGISTRATION PAGE: choose a type of user, then see its fields
+   ===================================================================== */
+
+/* Hidden until the user picks a type; register.js sets style.display */
+.form-body,
+.type-fields {
+  display: none;
+}
+
+/* Three big clickable cards for Student / Librarian / Visitor */
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.type-option {
+  display: block;
+  border: 2px solid #D8D0E8;
+  border-radius: 10px;
+  padding: 14px;
+  cursor: pointer;
+  font-weight: normal;
+  background-color: white;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.type-option:hover {
+  border-color: #8E6CC8;
+}
+
+.type-option strong {
+  font-size: 1.05rem;
+  color: #1B1F3B;
+}
+
+.type-option .hint {
+  display: block;
+  margin-top: 4px;
+}
+
+/* Added by JavaScript to the chosen card */
+.type-option.selected {
+  border-color: #663399;
+  background-color: #F3ECFC;
+}
+
+.btn-block {
+  width: 100%;
+  padding: 11px;
+  font-size: 1rem;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 16px;
+}
+
+
+/* =====================================================================
+   HOME PAGE
+   ===================================================================== */
+
+/* The search box inside the hero */
+.hero-search {
+  max-width: 640px;
+  margin: 26px auto 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hero-search input {
+  flex: 3;
+  min-width: 220px;
+  padding: 13px 16px;
+  font-size: 1rem;
+  border: none;
+}
+
+.hero-search select {
+  flex: 1;
+  min-width: 150px;
+  border: none;
+}
+
+.hero-note {
+  font-size: 0.9rem;
+  color: #BBB6CC;
+  margin-top: 10px;
+}
+
+/* Every home section gets space above and below */
+.home-section {
+  padding: 40px 0 10px 0;
+}
+
+.section-heading p {
+  color: #666666;
+  font-weight: normal;
+  font-size: 1rem;
+  margin-top: 6px;
+}
+
+/* Small feature strip under the hero */
+.feature-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.feature {
+  text-align: center;
+  padding: 18px;
+}
+
+.feature .feature-icon {
+  display: inline-block;
+  width: 52px;
+  height: 52px;
+  line-height: 52px;
+  border-radius: 50%;
+  background-color: #EEE6FA;
+  color: #663399;
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+/* Role cards: the button sits at the bottom of every card */
+.role-card .btn {
+  margin-top: 14px;
+}
+
+/* How it works: numbered steps */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.step {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  position: relative;          /* the number is placed inside this box */
+  padding-top: 34px;
+}
+
+.step-number {
+  position: absolute;          /* placed relative to .step */
+  top: -16px;
+  left: 20px;
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  border-radius: 50%;
+  background-color: #663399;
+  color: white;
+  font-weight: bold;
+}
+
+/* Call-to-action band near the bottom of the home page */
+.cta-band {
+  background-color: #663399;
+  color: white;
+  border-radius: 12px;
+  padding: 30px 20px;
+  text-align: center;
+  margin-top: 30px;
+}
+
+.cta-band h2 {
+  color: white;
+  margin-bottom: 8px;
+}
+
+.cta-band .btn {
+  margin: 6px;
+}
+
+/* Footer with a few columns of links */
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 8px;
+}
+
+.footer-links a {
+  color: #D9D4E8;
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.hero-link {
+  color: #C9A7F5;
+}
+
+.hero-link:hover {
+  color: white;
+}
+
+/* Contact Us details on the home page */
+.contact-table {
+  margin: 10px 0;
+  border-collapse: collapse;
+}
+
+.contact-table td {
+  padding: 5px 10px 5px 0;
+  vertical-align: top;
+}
+
+.contact-table td:first-child {
+  font-weight: bold;
+  white-space: nowrap;
+}

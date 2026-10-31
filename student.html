@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Student dashboard of the BookNest Library">
+  <title>Student Dashboard | BookNest Library</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo">Book<span>Nest</span></a>
+    <div class="user-info">
+      <span class="badge student">Student</span>
+      <span>Welcome, Rahim Uddin</span>
+      <a href="index.html" class="btn btn-small btn-light">Logout</a>
+    </div>
+  </header>
+
+  <nav class="topnav">
+    <button type="button" id="nav-remindersSection" onclick="showSection('remindersSection')">Due-Date Reminders</button>
+    <button type="button" id="nav-requestsSection" onclick="showSection('requestsSection')">My Book Requests</button>
+    <button type="button" id="nav-renewSection" onclick="showSection('renewSection')">Renew Book</button>
+    <button type="button" id="nav-goalSection" onclick="showSection('goalSection')">Reading Goal</button>
+    <button type="button" id="nav-catalogSection" onclick="showSection('catalogSection')">Search Catalogue</button>
+  </nav>
+
+  <main class="container">
+
+    <!-- =========================================================
+         UNIQUE FEATURE 1: DUE-DATE REMINDERS
+         ========================================================= -->
+    <section id="remindersSection" class="page-section">
+      <h2 class="page-title">Due-Date Reminders</h2>
+      <p class="page-subtitle" id="reminderSummary"></p>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3>Books I have now</h3>
+            <div id="reminderList"></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h3>My borrowing history</h3>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Book</th><th>Borrowed</th><th>Returned</th><th>Fine</th></tr>
+                </thead>
+                <tbody id="historyBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         MY BOOK REQUESTS: Create, Read, Update, Delete and Search
+         ========================================================= -->
+    <section id="requestsSection" class="page-section">
+      <h2 class="page-title">My Book Requests</h2>
+      <p class="page-subtitle">Ask the library to buy a new book or to reserve one for you.</p>
+
+      <div id="requestMessage" class="message"></div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3 id="requestFormTitle">New Request</h3>
+            <form id="requestForm" onsubmit="return saveRequest()">
+              <fieldset>
+                <legend>Request Details</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="requestTitle">Book title:</label></td>
+                    <td>
+                      <input type="text" id="requestTitle" placeholder="Title of the book">
+                      <span class="error" id="requestTitleError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="requestAuthor">Author:</label></td>
+                    <td>
+                      <input type="text" id="requestAuthor" placeholder="Author name">
+                      <span class="error" id="requestAuthorError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Request type:</td>
+                    <td>
+                      <input type="radio" id="typePurchase" name="requestType" value="Purchase">
+                      <label for="typePurchase" class="option-label">Purchase new</label>
+                      <input type="radio" id="typeReserve" name="requestType" value="Reserve">
+                      <label for="typeReserve" class="option-label">Reserve</label>
+                      <span class="error" id="requestTypeError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="requestPriority">Priority:</label></td>
+                    <td>
+                      <select id="requestPriority">
+                        <option value="Low">Low</option>
+                        <option value="Normal" selected>Normal</option>
+                        <option value="Urgent">Urgent</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="requestReason">Reason:</label></td>
+                    <td>
+                      <textarea id="requestReason" rows="4" cols="30" placeholder="Why do you need this book?" onkeyup="countReasonCharacters()"></textarea>
+                      <span class="hint" id="reasonCounter">0 / 200</span>
+                      <span class="error" id="requestReasonError"></span>
+                    </td>
+                  </tr>
+                </table>
+              </fieldset>
+              <input type="submit" id="requestSaveButton" class="btn" value="Send Request">
+              <button type="button" class="btn btn-secondary" onclick="resetRequestForm()">Cancel</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-wide">
+          <div class="card">
+            <h3>My requests</h3>
+            <div class="search-bar">
+              <input type="text" id="requestSearch" placeholder="Search by title, author or id..." onkeyup="renderRequests()">
+              <select id="requestStatusFilter" onchange="renderRequests()">
+                <option value="All">Any status</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </div>
+            <p class="result-count" id="requestCount"></p>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr><th>ID</th><th>Book</th><th>Type</th><th>Priority</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="requestTableBody"></tbody>
+              </table>
+            </div>
+            <p class="hint">Only pending requests can be edited or cancelled.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         UNIQUE FEATURE 2: RENEW A BORROWED BOOK
+         ========================================================= -->
+    <section id="renewSection" class="page-section">
+      <h2 class="page-title">Renew Book</h2>
+      <p class="page-subtitle" id="renewRules"></p>
+
+      <div id="renewMessage" class="message"></div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3>Renew a loan</h3>
+            <form id="renewForm" onsubmit="return renewLoan()">
+              <fieldset>
+                <legend>Choose a book</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="renewLoanSelect">Borrowed book:</label></td>
+                    <td>
+                      <select id="renewLoanSelect" onchange="previewRenewal()"></select>
+                      <span class="error" id="renewLoanSelectError"></span>
+                    </td>
+                  </tr>
+                </table>
+              </fieldset>
+              <input type="submit" class="btn btn-success" value="Renew">
+            </form>
+            <div class="result-box" id="renewPreview">Choose a book to see its new due date.</div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card">
+            <h3>Can I renew?</h3>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Book</th><th>Due</th><th>Renewals</th><th>Renewable?</th></tr>
+                </thead>
+                <tbody id="renewTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         UNIQUE FEATURE 3: READING GOAL TRACKER
+         ========================================================= -->
+    <section id="goalSection" class="page-section">
+      <h2 class="page-title">Reading Goal</h2>
+      <p class="page-subtitle">Set a target and watch your progress bar grow.</p>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3>My goal</h3>
+            <form onsubmit="return setGoal()">
+              <table class="form-table">
+                <tr>
+                  <td><label for="goalNumber">Books to read:</label></td>
+                  <td>
+                    <input type="number" id="goalNumber" min="1" max="100" value="10">
+                    <span class="error" id="goalNumberError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="goalPeriod">Time period:</label></td>
+                  <td>
+                    <select id="goalPeriod">
+                      <option value="this semester">This semester</option>
+                      <option value="this year">This year</option>
+                    </select>
+                  </td>
+                </tr>
+              </table>
+              <input type="submit" class="btn" value="Set Goal">
+            </form>
+
+            <h3 class="goal-progress-heading">Progress</h3>
+            <p id="goalText"></p>
+            <div class="progress-track">
+              <div class="progress-fill" id="goalBar"></div>
+            </div>
+            <p id="goalAdvice" class="hint"></p>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card">
+            <h3>Books I have read</h3>
+            <p class="hint">Books you returned to the library count automatically.
+              Add books you read elsewhere below.</p>
+            <ul id="readList" class="read-list"></ul>
+
+            <div class="search-bar">
+              <input type="text" id="extraBook" placeholder="e.g. The Alchemist">
+              <button type="button" class="btn" onclick="addExtraBook()">Add</button>
+              <button type="button" class="btn btn-secondary" onclick="removeLastExtraBook()">Remove last</button>
+            </div>
+            <span class="error" id="extraBookError"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         SEARCH CATALOGUE (read only)
+         ========================================================= -->
+    <section id="catalogSection" class="page-section">
+      <h2 class="page-title">Search Catalogue</h2>
+      <p class="page-subtitle">Find a book and see whether it is on the shelf.</p>
+
+      <div class="card">
+        <div class="search-bar">
+          <input type="text" id="catalogSearch" placeholder="Search by title, author or ISBN..." onkeyup="renderCatalog()">
+          <select id="catalogCategory" onchange="renderCatalog()">
+            <option value="All">All categories</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Mathematics">Mathematics</option>
+            <option value="Science">Science</option>
+            <option value="Business">Business</option>
+            <option value="History">History</option>
+            <option value="Literature">Literature</option>
+          </select>
+        </div>
+        <p class="result-count" id="catalogCount"></p>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr><th>Title</th><th>Author</th><th>Category</th><th>Year</th><th>Shelf</th><th>Status</th></tr>
+            </thead>
+            <tbody id="catalogBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    &copy; 2026 BookNest Library &middot; CSC 3215 Web Technologies
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/student.js"></script>
+</body>
+</html>

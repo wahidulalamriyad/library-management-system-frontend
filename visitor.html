@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Visitor area of the BookNest Library">
+  <title>Visitor | BookNest Library</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo">Book<span>Nest</span></a>
+    <div class="user-info">
+      <span class="badge visitor">Visitor</span>
+      <span>Welcome, Farhana Kabir</span>
+      <a href="index.html" class="btn btn-small btn-light">Logout</a>
+    </div>
+  </header>
+
+  <nav class="topnav">
+    <button type="button" id="nav-passesSection" onclick="showSection('passesSection')">Visit Passes</button>
+    <button type="button" id="nav-catalogSection" onclick="showSection('catalogSection')">Browse Books</button>
+    <button type="button" id="nav-feeSection" onclick="showSection('feeSection')">Membership Fees</button>
+    <button type="button" id="nav-hoursSection" onclick="showSection('hoursSection')">Opening Hours</button>
+    <button type="button" id="nav-finderSection" onclick="showSection('finderSection')">Section Finder</button>
+  </nav>
+
+  <main class="container">
+
+    <!-- =========================================================
+         VISIT PASSES: Create, Read, Update, Delete and Search
+         ========================================================= -->
+    <section id="passesSection" class="page-section">
+      <h2 class="page-title">Reading-Room Visit Passes</h2>
+      <p class="page-subtitle">Book a free day pass to visit the reading room. Your name, email and phone are filled in from your account.</p>
+
+      <div id="passMessage" class="message"></div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3 id="passFormTitle">Book a Visit Pass</h3>
+            <form id="passForm" onsubmit="return savePass()">
+              <fieldset>
+                <legend>Visitor Details</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="passName">Full Name:</label></td>
+                    <td>
+                      <input type="text" id="passName" placeholder="Your full name">
+                      <span class="error" id="passNameError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="passEmail">Email:</label></td>
+                    <td>
+                      <input type="email" id="passEmail" placeholder="you@mail.com">
+                      <span class="error" id="passEmailError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="passPhone">Phone:</label></td>
+                    <td>
+                      <input type="tel" id="passPhone" placeholder="11 digits, e.g. 01712345678">
+                      <span class="error" id="passPhoneError"></span>
+                    </td>
+                  </tr>
+                </table>
+              </fieldset>
+              <fieldset>
+                <legend>Visit Details</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="passDate">Visit date:</label></td>
+                    <td>
+                      <input type="date" id="passDate">
+                      <span class="error" id="passDateError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="passSlot">Time slot:</label></td>
+                    <td>
+                      <select id="passSlot">
+                        <option value="">-- Select Slot --</option>
+                        <option value="Morning (9 AM - 12 PM)">Morning (9 AM - 12 PM)</option>
+                        <option value="Afternoon (12 PM - 4 PM)">Afternoon (12 PM - 4 PM)</option>
+                        <option value="Evening (4 PM - 8 PM)">Evening (4 PM - 8 PM)</option>
+                      </select>
+                      <span class="error" id="passSlotError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Purpose:</td>
+                    <td>
+                      <input type="radio" id="purposeReading" name="passPurpose" value="Reading">
+                      <label for="purposeReading" class="option-label">Reading</label>
+                      <input type="radio" id="purposeResearch" name="passPurpose" value="Research">
+                      <label for="purposeResearch" class="option-label">Research</label>
+                      <input type="radio" id="purposeTour" name="passPurpose" value="Tour">
+                      <label for="purposeTour" class="option-label">Tour</label>
+                      <span class="error" id="passPurposeError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="passGuests">Extra guests:</label></td>
+                    <td>
+                      <input type="number" id="passGuests" min="0" max="4" value="0">
+                      <span class="error" id="passGuestsError"></span>
+                    </td>
+                  </tr>
+                </table>
+              </fieldset>
+              <input type="submit" id="passSaveButton" class="btn" value="Book Pass">
+              <button type="button" class="btn btn-secondary" onclick="resetPassForm()">Cancel</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-wide">
+          <div class="card">
+            <h3>My passes</h3>
+            <div class="search-bar">
+              <input type="text" id="passSearch" placeholder="Search by name, email, phone or pass id..." onkeyup="renderPasses()">
+              <input type="date" id="passDateFilter" onchange="renderPasses()">
+              <button type="button" class="btn btn-secondary" onclick="clearPassFilters()">Show all</button>
+            </div>
+            <p class="result-count" id="passCount"></p>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Pass</th><th>Name</th><th>Phone</th><th>Visit</th><th>Purpose</th><th>People</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="passTableBody"></tbody>
+              </table>
+            </div>
+            <p class="hint">Each time slot holds at most 10 people. The library is closed on Fridays until 3 PM, so passes are for Saturday to Thursday.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         BROWSE BOOKS (search the catalogue, read only)
+         ========================================================= -->
+    <section id="catalogSection" class="page-section">
+      <h2 class="page-title">Browse Books</h2>
+      <p class="page-subtitle">See what the library has. Become a member to borrow books.</p>
+
+      <div class="card">
+        <div class="search-bar">
+          <input type="text" id="catalogSearch" placeholder="Search by title, author or ISBN..." onkeyup="renderCatalog()">
+          <select id="catalogCategory" onchange="renderCatalog()">
+            <option value="All">All categories</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Mathematics">Mathematics</option>
+            <option value="Science">Science</option>
+            <option value="Business">Business</option>
+            <option value="History">History</option>
+            <option value="Literature">Literature</option>
+          </select>
+        </div>
+        <p class="result-count" id="catalogCount"></p>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr><th>Title</th><th>Author</th><th>Category</th><th>Year</th><th>Shelf</th><th>Status</th></tr>
+            </thead>
+            <tbody id="catalogBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         UNIQUE FEATURE 1: MEMBERSHIP FEE CALCULATOR
+         ========================================================= -->
+    <section id="feeSection" class="page-section">
+      <h2 class="page-title">Membership Fee Calculator</h2>
+      <p class="page-subtitle">Pick a plan and see what it costs before you join.</p>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3>Choose your plan</h3>
+            <form onsubmit="return calculateFee()">
+              <fieldset>
+                <legend>Plan</legend>
+                <input type="radio" id="planBasic" name="plan" value="Basic" checked onchange="calculateFee()">
+                <label for="planBasic" class="option-label">Basic: 200 Tk / month, 2 books</label><br>
+                <input type="radio" id="planStandard" name="plan" value="Standard" onchange="calculateFee()">
+                <label for="planStandard" class="option-label">Standard: 350 Tk / month, 4 books</label><br>
+                <input type="radio" id="planPremium" name="plan" value="Premium" onchange="calculateFee()">
+                <label for="planPremium" class="option-label">Premium: 500 Tk / month, 6 books + reading room</label>
+              </fieldset>
+              <fieldset>
+                <legend>Options</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="feeMonths">Length:</label></td>
+                    <td>
+                      <select id="feeMonths" onchange="calculateFee()">
+                        <option value="1">1 month</option>
+                        <option value="3">3 months</option>
+                        <option value="6">6 months (10% off)</option>
+                        <option value="12">12 months (15% off)</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Discount:</td>
+                    <td>
+                      <input type="checkbox" id="feeConcession" onchange="calculateFee()">
+                      <label for="feeConcession" class="option-label">I am a student or senior citizen (extra 10% off)</label>
+                    </td>
+                  </tr>
+                </table>
+              </fieldset>
+              <input type="submit" class="btn" value="Calculate">
+            </form>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h3>Your estimate</h3>
+            <div class="result-box" id="feeResult"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         UNIQUE FEATURE 2: OPENING HOURS CHECKER
+         ========================================================= -->
+    <section id="hoursSection" class="page-section">
+      <h2 class="page-title">Opening Hours</h2>
+      <p class="page-subtitle">Check whether the library is open at the time you plan to come.</p>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3>Is it open?</h3>
+            <form onsubmit="return checkOpen()">
+              <table class="form-table">
+                <tr>
+                  <td><label for="checkDay">Day:</label></td>
+                  <td>
+                    <select id="checkDay">
+                      <option value="0">Sunday</option>
+                      <option value="1">Monday</option>
+                      <option value="2">Tuesday</option>
+                      <option value="3">Wednesday</option>
+                      <option value="4">Thursday</option>
+                      <option value="5">Friday</option>
+                      <option value="6">Saturday</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="checkTime">Time:</label></td>
+                  <td>
+                    <input type="time" id="checkTime">
+                    <span class="error" id="checkTimeError"></span>
+                  </td>
+                </tr>
+              </table>
+              <input type="submit" class="btn" value="Check">
+              <button type="button" class="btn btn-secondary" onclick="checkRightNow()">Right now</button>
+            </form>
+            <div class="result-box" id="openResult">Pick a day and a time, then press Check.</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h3>Weekly timetable</h3>
+            <table class="data-table">
+              <thead>
+                <tr><th>Day</th><th>Opens</th><th>Closes</th></tr>
+              </thead>
+              <tbody id="hoursTableBody"></tbody>
+            </table>
+            <p class="hint">Today's row is highlighted.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         UNIQUE FEATURE 3: SECTION FINDER
+         ========================================================= -->
+    <section id="finderSection" class="page-section">
+      <h2 class="page-title">Section Finder</h2>
+      <p class="page-subtitle">Not sure where to go? Pick a subject and we will show you the floor and shelves.</p>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3>What are you looking for?</h3>
+            <label for="finderSubject">Subject or service:</label>
+            <select id="finderSubject" onchange="findSection()">
+              <option value="">-- Select --</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Science">Science</option>
+              <option value="Business">Business</option>
+              <option value="History">History</option>
+              <option value="Literature">Literature</option>
+              <option value="Newspapers">Newspapers and magazines</option>
+              <option value="Reading Room">Reading room</option>
+            </select>
+            <div class="result-box" id="finderResult">Choose a subject to see where it is.</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h3>Building map</h3>
+            <div class="floor-map">
+              <div class="floor" id="floor3"><strong>3rd floor</strong> &middot; History, Literature</div>
+              <div class="floor" id="floor2"><strong>2nd floor</strong> &middot; Science, Business</div>
+              <div class="floor" id="floor1"><strong>1st floor</strong> &middot; Computer Science, Mathematics</div>
+              <div class="floor" id="floor0"><strong>Ground floor</strong> &middot; Front desk, Reading room, Newspapers</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    &copy; 2026 BookNest Library &middot; CSC 3215 Web Technologies
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/visitor.js"></script>
+</body>
+</html>

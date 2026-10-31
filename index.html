@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BookNest Library: search books, borrow, renew and visit the reading room">
+  <title>Home | BookNest Library</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header class="header">
+    <a href="index.html" class="logo">Book<span>Nest</span></a>
+    <div class="user-info">
+      <a href="login.html" class="btn btn-small btn-light">Login</a>
+      <a href="register.html" class="btn btn-small">Register</a>
+    </div>
+  </header>
+
+  <!-- The same navigation bar on every public page.
+       Login and Register are buttons in the header, so they are not repeated here. -->
+  <nav class="topnav">
+    <a href="index.html" class="active">Home</a>
+    <a href="#search">Search Books</a>
+    <a href="#who">Who It's For</a>
+    <a href="#how">How It Works</a>
+    <a href="#hours">Opening Hours</a>
+    <a href="#contact">Contact Us</a>
+  </nav>
+
+  <!-- ============ HERO with the catalogue search ============ -->
+  <div class="hero">
+    <h1>Find your next book</h1>
+    <p>Search the whole catalogue in seconds, borrow with one account, and never miss a due date.</p>
+
+    <!-- Typing here filters the results below right away (onkeyup) -->
+    <div class="hero-search">
+      <input type="text" id="catalogSearch" placeholder="Search by title, author or ISBN..." onkeyup="renderCatalog()">
+      <select id="catalogCategory" onchange="renderCatalog()">
+        <option value="All">All categories</option>
+        <option value="Computer Science">Computer Science</option>
+        <option value="Mathematics">Mathematics</option>
+        <option value="Science">Science</option>
+        <option value="Business">Business</option>
+        <option value="History">History</option>
+        <option value="Literature">Literature</option>
+      </select>
+    </div>
+    <p class="hero-note">No account needed to search. <a href="#search" class="hero-link">See the results &darr;</a></p>
+  </div>
+
+  <main class="container">
+
+    <!-- ============ WHY BOOKNEST ============ -->
+    <div class="feature-strip">
+      <div class="feature">
+        <span class="feature-icon">1</span>
+        <h3>One account</h3>
+        <p>Register once and log in from a single page, whoever you are.</p>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">14</span>
+        <h3>14-day loans</h3>
+        <p>Borrow up to 3 books and renew online before the due date.</p>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">&#10003;</span>
+        <h3>Reminders</h3>
+        <p>See at a glance which books are due soon, colour-coded.</p>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">7</span>
+        <h3>Open every day</h3>
+        <p>Saturday to Thursday all day, Friday afternoon too.</p>
+      </div>
+    </div>
+
+    <!-- ============ SEARCH RESULTS ============ -->
+    <section id="search" class="home-section">
+      <div class="section-heading">
+        <h2>Our catalogue</h2>
+        <p>Type in the search box above, or pick a category.</p>
+      </div>
+      <div class="card">
+        <p class="result-count" id="catalogCount"></p>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr><th>Title</th><th>Author</th><th>Category</th><th>Year</th><th>Shelf</th><th>Status</th></tr>
+            </thead>
+            <tbody id="catalogBody"></tbody>
+          </table>
+        </div>
+        <p class="hint">Want to borrow one? <a href="register.html">Create a free student account</a> or
+          <a href="login.html">log in</a>.</p>
+      </div>
+    </section>
+
+    <!-- ============ WHO IT'S FOR ============ -->
+    <section id="who" class="home-section">
+      <div class="section-heading">
+        <h2>Who is BookNest for?</h2>
+        <p>Choose your type when you register. Everyone logs in from the same page.</p>
+      </div>
+
+      <div class="role-grid">
+        <div class="role-card student">
+          <span class="badge student">Student</span>
+          <h3>Students</h3>
+          <ul>
+            <li>See due dates with reminders</li>
+            <li>Renew a book online</li>
+            <li>Request books the library should buy</li>
+            <li>Track a reading goal</li>
+          </ul>
+          <a href="register.html" class="btn btn-success">Register as Student</a>
+        </div>
+
+        <div class="role-card visitor">
+          <span class="badge visitor">Visitor</span>
+          <h3>Visitors</h3>
+          <ul>
+            <li>Book a free reading-room pass</li>
+            <li>Check if the library is open</li>
+            <li>Find the right floor and shelf</li>
+            <li>Work out a membership fee</li>
+          </ul>
+          <a href="register.html" class="btn btn-success">Register as Visitor</a>
+        </div>
+
+        <div class="role-card librarian">
+          <span class="badge librarian">Librarian</span>
+          <h3>Librarians</h3>
+          <ul>
+            <li>Manage the book catalogue</li>
+            <li>Issue and take back books</li>
+            <li>Calculate late fines</li>
+            <li>See every overdue loan</li>
+          </ul>
+          <a href="register.html" class="btn btn-success">Apply as Librarian</a>
+        </div>
+
+        <div class="role-card admin">
+          <span class="badge admin">Admin</span>
+          <h3>Administrators</h3>
+          <ul>
+            <li>Approve new librarians</li>
+            <li>Manage every account</li>
+            <li>Set the library rules</li>
+            <li>Watch reports and activity</li>
+          </ul>
+          <a href="login.html" class="btn">Admin Login</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HOW IT WORKS ============ -->
+    <section id="how" class="home-section">
+      <div class="section-heading">
+        <h2>How it works</h2>
+        <p>Three simple steps.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <span class="step-number">1</span>
+          <h3>Register</h3>
+          <p>Open <a href="register.html">Register</a>, choose Student, Librarian or Visitor,
+             and fill in the details that type needs.</p>
+        </div>
+        <div class="step">
+          <span class="step-number">2</span>
+          <h3>Log in</h3>
+          <p>Use the <a href="login.html">single login page</a>. BookNest opens your own dashboard
+             automatically. Librarians log in after an admin approves them.</p>
+        </div>
+        <div class="step">
+          <span class="step-number">3</span>
+          <h3>Use the library</h3>
+          <p>Borrow and renew books, book a reading-room pass, or manage the collection,
+             depending on your account.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ OPENING HOURS AND CONTACT US ============ -->
+    <div class="row">
+      <section id="hours" class="col home-section">
+        <div class="card">
+          <h3>Opening hours</h3>
+          <table class="data-table">
+            <thead>
+              <tr><th>Days</th><th>Hours</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Sunday - Wednesday</td><td>8:00 AM - 8:00 PM</td></tr>
+              <tr><td>Thursday</td><td>8:00 AM - 6:00 PM</td></tr>
+              <tr><td>Friday</td><td>3:00 PM - 8:00 PM</td></tr>
+              <tr><td>Saturday</td><td>9:00 AM - 8:00 PM</td></tr>
+            </tbody>
+          </table>
+          <p class="hint">The library may close early on public holidays and during university exams.</p>
+        </div>
+      </section>
+
+      <section id="contact" class="col home-section">
+        <div class="card">
+          <h3>Contact Us</h3>
+          <p><strong>AIUB Central Library</strong><br>
+             American International University-Bangladesh (AIUB)</p>
+          <table class="contact-table">
+            <tr>
+              <td>Address:</td>
+              <td>408/1 (Old KA 66/1), Kuratoli, Kuril, Khilkhet, Dhaka 1229, Bangladesh</td>
+            </tr>
+            <tr>
+              <td>Phone:</td>
+              <td>+88 02 841 4046-9</td>
+            </tr>
+            <tr>
+              <td>Email:</td>
+              <td><a href="mailto:info@aiub.edu">info@aiub.edu</a></td>
+            </tr>
+            <tr>
+              <td>Website:</td>
+              <td><a href="https://www.aiub.edu" target="_blank">www.aiub.edu</a></td>
+            </tr>
+          </table>
+          <p class="hint">Need help with a book or your account? Visit the library front desk on campus.</p>
+        </div>
+      </section>
+    </div>
+
+    <section class="home-section">
+      <div class="cta-band">
+        <h2>Ready to start reading?</h2>
+        <p>It takes less than two minutes to create an account.</p>
+        <a href="register.html" class="btn btn-light">Create an account</a>
+        <a href="login.html" class="btn btn-secondary">I already have one</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    &copy; 2026 BookNest Library &middot; CSC 3215 Web Technologies
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

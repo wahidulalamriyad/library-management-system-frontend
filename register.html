@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create a BookNest Library account">
+  <title>Register | BookNest Library</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo">Book<span>Nest</span></a>
+    <div class="user-info">
+      <a href="login.html" class="btn btn-small btn-light">Login</a>
+      <a href="register.html" class="btn btn-small">Register</a>
+    </div>
+  </header>
+
+  <!-- The same navigation bar on every public page.
+       Login and Register are buttons in the header, so they are not repeated here. -->
+  <nav class="topnav">
+    <a href="index.html">Home</a>
+    <a href="index.html#search">Search Books</a>
+    <a href="index.html#who">Who It's For</a>
+    <a href="index.html#how">How It Works</a>
+    <a href="index.html#hours">Opening Hours</a>
+    <a href="index.html#contact">Contact Us</a>
+  </nav>
+
+  <main class="container">
+    <div class="auth-box wide">
+      <div class="card">
+        <h2 class="page-title">Create your account</h2>
+        <p class="page-subtitle">One registration page for students, librarians and visitors.
+          Choose who you are and the form will ask only for what we need. Fields marked * are required.</p>
+
+        <div id="registerMessage" class="message"></div>
+
+        <form id="registerForm" action="login.html" method="get" onsubmit="return validateRegister()">
+
+          <!-- ================= STEP 1: TYPE OF USER =================
+               Radio buttons share one name, so only one type can be picked.
+               onchange calls showTypeFields(), which shows the matching fieldset. -->
+          <fieldset>
+            <legend>Step 1 &middot; I want to register as *</legend>
+            <div class="type-grid">
+              <label class="type-option" id="typeCardStudent" for="typeStudent">
+                <input type="radio" id="typeStudent" name="userType" value="Student" onchange="showTypeFields()">
+                <strong>Student</strong>
+                <span class="hint">Borrow books, renew them and request new titles.</span>
+              </label>
+              <label class="type-option" id="typeCardLibrarian" for="typeLibrarian">
+                <input type="radio" id="typeLibrarian" name="userType" value="Librarian" onchange="showTypeFields()">
+                <strong>Librarian</strong>
+                <span class="hint">Manage books and loans. Needs admin approval.</span>
+              </label>
+              <label class="type-option" id="typeCardVisitor" for="typeVisitor">
+                <input type="radio" id="typeVisitor" name="userType" value="Visitor" onchange="showTypeFields()">
+                <strong>Visitor</strong>
+                <span class="hint">Book reading-room passes and explore the library.</span>
+              </label>
+            </div>
+            <span class="error" id="userTypeError"></span>
+            <p class="hint">Library admins are added by an existing admin from the Admin panel.</p>
+          </fieldset>
+
+          <!-- Everything below stays hidden until a type is chosen -->
+          <div id="formBody" class="form-body">
+
+            <!-- ================= STEP 2: COMMON DETAILS (every type) ================= -->
+            <fieldset>
+              <legend>Step 2 &middot; Personal information</legend>
+              <table class="form-table">
+                <tr>
+                  <td><label for="fullName">Full Name: *</label></td>
+                  <td>
+                    <input type="text" id="fullName" name="fullName" placeholder="Your full name">
+                    <span class="error" id="fullNameError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="email">Email: *</label></td>
+                  <td>
+                    <input type="email" id="email" name="email" placeholder="you@example.com">
+                    <span class="error" id="emailError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="phone">Phone: *</label></td>
+                  <td>
+                    <input type="tel" id="phone" name="phone" placeholder="11 digits, e.g. 01712345678">
+                    <span class="error" id="phoneError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Gender: *</td>
+                  <td>
+                    <input type="radio" id="genderMale" name="gender" value="Male">
+                    <label for="genderMale" class="option-label">Male</label>
+                    <input type="radio" id="genderFemale" name="gender" value="Female">
+                    <label for="genderFemale" class="option-label">Female</label>
+                    <input type="radio" id="genderOther" name="gender" value="Other">
+                    <label for="genderOther" class="option-label">Prefer not to say</label>
+                    <span class="error" id="genderError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="dob">Date of Birth: *</label></td>
+                  <td>
+                    <input type="date" id="dob" name="dob">
+                    <span class="error" id="dobError"></span>
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+
+            <!-- ================= STEP 3a: STUDENT ONLY ================= -->
+            <fieldset id="studentFields" class="type-fields">
+              <legend>Step 3 &middot; Student details</legend>
+              <table class="form-table">
+                <tr>
+                  <td><label for="studentId">Student ID: *</label></td>
+                  <td>
+                    <input type="text" id="studentId" name="studentId" placeholder="e.g. 23-51234-1">
+                    <span class="error" id="studentIdError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="department">Department: *</label></td>
+                  <td>
+                    <select id="department" name="department">
+                      <option value="">-- Select Department --</option>
+                      <option value="CSE">CSE</option>
+                      <option value="EEE">EEE</option>
+                      <option value="BBA">BBA</option>
+                      <option value="English">English</option>
+                      <option value="Architecture">Architecture</option>
+                    </select>
+                    <span class="error" id="departmentError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="semester">Semester: *</label></td>
+                  <td>
+                    <select id="semester" name="semester">
+                      <option value="">-- Select Semester --</option>
+                      <option value="1st">1st</option>
+                      <option value="2nd">2nd</option>
+                      <option value="3rd">3rd</option>
+                      <option value="4th">4th</option>
+                      <option value="5th">5th</option>
+                      <option value="6th">6th</option>
+                      <option value="7th">7th</option>
+                      <option value="8th">8th</option>
+                    </select>
+                    <span class="error" id="semesterError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Favourite Subjects:</td>
+                  <td>
+                    <input type="checkbox" id="favCS" name="favourite" value="Computer Science">
+                    <label for="favCS" class="option-label">Computer Science</label>
+                    <input type="checkbox" id="favMath" name="favourite" value="Mathematics">
+                    <label for="favMath" class="option-label">Mathematics</label>
+                    <input type="checkbox" id="favLit" name="favourite" value="Literature">
+                    <label for="favLit" class="option-label">Literature</label>
+                    <input type="checkbox" id="favHist" name="favourite" value="History">
+                    <label for="favHist" class="option-label">History</label>
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+
+            <!-- ================= STEP 3b: LIBRARIAN ONLY ================= -->
+            <fieldset id="librarianFields" class="type-fields">
+              <legend>Step 3 &middot; Librarian details</legend>
+              <table class="form-table">
+                <tr>
+                  <td><label for="employeeId">Employee ID: *</label></td>
+                  <td>
+                    <input type="text" id="employeeId" name="employeeId" placeholder="e.g. EMP-1234">
+                    <span class="error" id="employeeIdError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="qualification">Qualification: *</label></td>
+                  <td>
+                    <select id="qualification" name="qualification">
+                      <option value="">-- Select Qualification --</option>
+                      <option value="Diploma">Diploma in Library Science</option>
+                      <option value="BLIS">Bachelor of Library &amp; Information Science (BLIS)</option>
+                      <option value="MLIS">Master of Library &amp; Information Science (MLIS)</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <span class="error" id="qualificationError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="experience">Experience (years): *</label></td>
+                  <td>
+                    <input type="number" id="experience" name="experience" min="0" max="40" placeholder="0 - 40">
+                    <span class="error" id="experienceError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Preferred Shift: *</td>
+                  <td>
+                    <input type="radio" id="shiftMorning" name="shift" value="Morning">
+                    <label for="shiftMorning" class="option-label">Morning (8 AM - 2 PM)</label>
+                    <input type="radio" id="shiftEvening" name="shift" value="Evening">
+                    <label for="shiftEvening" class="option-label">Evening (2 PM - 8 PM)</label>
+                    <span class="error" id="shiftError"></span>
+                  </td>
+                </tr>
+              </table>
+              <p class="hint">Librarian accounts are checked by an admin. You can log in after approval.</p>
+            </fieldset>
+
+            <!-- ================= STEP 3c: VISITOR ONLY ================= -->
+            <fieldset id="visitorFields" class="type-fields">
+              <legend>Step 3 &middot; Visitor details</legend>
+              <table class="form-table">
+                <tr>
+                  <td><label for="nid">National ID (NID): *</label></td>
+                  <td>
+                    <input type="text" id="nid" name="nid" placeholder="10, 13 or 17 digits">
+                    <span class="error" id="nidError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="occupation">Occupation: *</label></td>
+                  <td>
+                    <select id="occupation" name="occupation">
+                      <option value="">-- Select Occupation --</option>
+                      <option value="Student (other institution)">Student (other institution)</option>
+                      <option value="Teacher">Teacher</option>
+                      <option value="Researcher">Researcher</option>
+                      <option value="Professional">Professional</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <span class="error" id="occupationError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="organization">Organization:</label></td>
+                  <td>
+                    <input type="text" id="organization" name="organization" placeholder="School, company or institute (optional)">
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="address">Address: *</label></td>
+                  <td>
+                    <textarea id="address" name="address" rows="3" cols="30" placeholder="House, road, area, city"></textarea>
+                    <span class="error" id="addressError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>I am interested in:</td>
+                  <td>
+                    <input type="checkbox" id="intReading" name="interest" value="Reading">
+                    <label for="intReading" class="option-label">Reading</label>
+                    <input type="checkbox" id="intResearch" name="interest" value="Research">
+                    <label for="intResearch" class="option-label">Research</label>
+                    <input type="checkbox" id="intEvents" name="interest" value="Events">
+                    <label for="intEvents" class="option-label">Events and talks</label>
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+
+            <!-- ================= STEP 4: ACCOUNT (every type) ================= -->
+            <fieldset>
+              <legend>Step 4 &middot; Login details</legend>
+              <table class="form-table">
+                <tr>
+                  <td><label for="newUsername">Username: *</label></td>
+                  <td>
+                    <input type="text" id="newUsername" name="newUsername" placeholder="At least 4 characters, no spaces">
+                    <span class="error" id="newUsernameError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="newPassword">Password: *</label></td>
+                  <td>
+                    <input type="password" id="newPassword" placeholder="At least 8 characters with a digit" onkeyup="showPasswordStrength()">
+                    <span class="hint" id="strengthText"></span>
+                    <span class="error" id="newPasswordError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="confirmPassword">Confirm Password: *</label></td>
+                  <td>
+                    <input type="password" id="confirmPassword" placeholder="Type the password again">
+                    <span class="error" id="confirmPasswordError"></span>
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+
+            <!-- DHTML example from Lecture 01: the button stays disabled until the box is ticked -->
+            <p>
+              <input type="checkbox" id="terms" name="terms" onchange="toggleRegisterButton()">
+              <label for="terms" class="option-label">I agree to the library rules and terms *</label>
+            </p>
+
+            <div class="form-buttons">
+              <input type="submit" id="registerButton" class="btn" value="Create Account" disabled>
+              <input type="reset" class="btn btn-secondary" value="Start Again" onclick="resetRegisterForm()">
+            </div>
+          </div>
+        </form>
+
+        <p class="auth-switch">Already have an account? <a href="login.html">Login here</a></p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    &copy; 2026 BookNest Library &middot; CSC 3215 Web Technologies
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/register.js"></script>
+</body>
+</html>

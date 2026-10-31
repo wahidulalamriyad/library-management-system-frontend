@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Login to the BookNest Library Management System">
+  <title>Login | BookNest Library</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo">Book<span>Nest</span></a>
+    <div class="user-info">
+      <a href="login.html" class="btn btn-small btn-light">Login</a>
+      <a href="register.html" class="btn btn-small">Register</a>
+    </div>
+  </header>
+
+  <!-- The same navigation bar on every public page.
+       Login and Register are buttons in the header, so they are not repeated here. -->
+  <nav class="topnav">
+    <a href="index.html">Home</a>
+    <a href="index.html#search">Search Books</a>
+    <a href="index.html#who">Who It's For</a>
+    <a href="index.html#how">How It Works</a>
+    <a href="index.html#hours">Opening Hours</a>
+    <a href="index.html#contact">Contact Us</a>
+  </nav>
+
+  <main class="container">
+    <div class="auth-box">
+
+      <div class="card">
+        <h2 class="page-title">Welcome back</h2>
+        <p class="page-subtitle">One login for everyone: admins, librarians, students and visitors.
+          We will open the right dashboard for your account.</p>
+
+        <div id="loginMessage" class="message"></div>
+
+        <!--
+          onsubmit="return validateLogin()"  (Lecture 05: Form Validation)
+          return false -> the form is NOT sent, the user stays here
+          return true  -> the browser opens the page in "action".
+          JavaScript sets the action to admin.html, librarian.html,
+          student.html or visitor.html, depending on the account's role.
+
+          method="get" is used because these are plain .html files for now.
+          The password input has NO name attribute, so it is never put in the URL
+          (Lecture 01, Spot the Bugs: "Without a name, the value is never sent").
+          With the PHP backend this becomes method="post" with name="password".
+        -->
+        <form id="loginForm" action="index.html" method="get" onsubmit="return validateLogin()">
+          <fieldset>
+            <legend>Your account</legend>
+            <table class="form-table">
+              <tr>
+                <td><label for="username">Username or Email:</label></td>
+                <td>
+                  <input type="text" id="username" name="username" placeholder="e.g. student or rahim@student.edu">
+                  <span class="error" id="usernameError"></span>
+                </td>
+              </tr>
+              <tr>
+                <td><label for="password">Password:</label></td>
+                <td>
+                  <input type="password" id="password" placeholder="Your password">
+                  <span class="error" id="passwordError"></span>
+                  <input type="checkbox" id="showPassword" onchange="togglePassword()">
+                  <label for="showPassword" class="option-label">Show password</label>
+                </td>
+              </tr>
+            </table>
+          </fieldset>
+
+          <input type="submit" class="btn btn-block" value="Login">
+        </form>
+
+        <p class="auth-switch">Don't have an account? <a href="register.html">Register here</a></p>
+      </div>
+
+      <div class="card">
+        <h3>Demo accounts</h3>
+        <p class="hint">Click "Use" to fill the form, then press Login.</p>
+        <table class="demo-accounts">
+          <tr>
+            <td><span class="badge admin">Admin</span></td>
+            <td>admin / admin1234</td>
+            <td><button type="button" class="btn btn-small" onclick="fillDemo('admin', 'admin1234')">Use</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge librarian">Librarian</span></td>
+            <td>librarian / library123</td>
+            <td><button type="button" class="btn btn-small" onclick="fillDemo('librarian', 'library123')">Use</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge student">Student</span></td>
+            <td>student / student123</td>
+            <td><button type="button" class="btn btn-small" onclick="fillDemo('student', 'student123')">Use</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge visitor">Visitor</span></td>
+            <td>visitor / visitor123</td>
+            <td><button type="button" class="btn btn-small" onclick="fillDemo('visitor', 'visitor123')">Use</button></td>
+          </tr>
+          <tr>
+            <td><span class="badge orange">Pending</span></td>
+            <td>jamal / jamal1234</td>
+            <td><button type="button" class="btn btn-small btn-secondary" onclick="fillDemo('jamal', 'jamal1234')">Use</button></td>
+          </tr>
+        </table>
+        <p class="hint">The last one is a librarian who registered but is not approved yet, so login is refused.</p>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    &copy; 2026 BookNest Library &middot; CSC 3215 Web Technologies
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

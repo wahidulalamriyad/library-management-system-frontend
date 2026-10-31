@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Admin dashboard of the BookNest Library">
+  <title>Admin Dashboard | BookNest Library</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header class="header">
+    <a href="index.html" class="logo">Book<span>Nest</span></a>
+    <div class="user-info">
+      <span class="badge admin">Admin</span>
+      <span>Welcome, Rifat Hasan</span>
+      <a href="index.html" class="btn btn-small btn-light">Logout</a>
+    </div>
+  </header>
+
+  <!-- ============ NAVIGATION: each button shows one section ============ -->
+  <nav class="topnav">
+    <button type="button" id="nav-statsSection" onclick="showSection('statsSection')">Statistics Report</button>
+    <button type="button" id="nav-usersSection" onclick="showSection('usersSection')">Manage Users</button>
+    <button type="button" id="nav-rulesSection" onclick="showSection('rulesSection')">Library Rules</button>
+    <button type="button" id="nav-logSection" onclick="showSection('logSection')">Activity Log</button>
+  </nav>
+
+  <main class="container">
+
+    <!-- =========================================================
+         UNIQUE FEATURE 1: LIBRARY STATISTICS REPORT
+         Counts are worked out with loops over the data arrays.
+         ========================================================= -->
+    <section id="statsSection" class="page-section">
+      <h2 class="page-title">Library Statistics Report</h2>
+      <p class="page-subtitle">A live summary of users, books and loans.
+        <span id="reportTime" class="hint"></span></p>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-number" id="statUsers">0</div><div class="stat-label">Total users</div></div>
+        <div class="stat-card"><div class="stat-number" id="statActive">0</div><div class="stat-label">Active accounts</div></div>
+        <div class="stat-card"><div class="stat-number" id="statPending">0</div><div class="stat-label">Waiting for approval</div></div>
+        <div class="stat-card"><div class="stat-number" id="statTitles">0</div><div class="stat-label">Book titles</div></div>
+        <div class="stat-card"><div class="stat-number" id="statCopies">0</div><div class="stat-label">Book copies</div></div>
+        <div class="stat-card"><div class="stat-number" id="statOnLoan">0</div><div class="stat-label">Books on loan now</div></div>
+        <div class="stat-card"><div class="stat-number" id="statOverdue">0</div><div class="stat-label">Overdue loans</div></div>
+        <div class="stat-card"><div class="stat-number" id="statFines">0</div><div class="stat-label">Fines collected (Tk)</div></div>
+        <div class="stat-card"><div class="stat-number" id="statUsage">0%</div><div class="stat-label">Copies in use</div></div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3>Users by role</h3>
+            <div id="roleChart"></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h3>Book copies by category</h3>
+            <div id="categoryChart"></div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn" onclick="generateReport()">Refresh report</button>
+    </section>
+
+
+    <!-- =========================================================
+         MANAGE USERS: Create, Read, Update, Delete and Search
+         ========================================================= -->
+    <section id="usersSection" class="page-section">
+      <h2 class="page-title">Manage Users</h2>
+      <p class="page-subtitle">Create, view, edit, delete and search user accounts. New admins can only be added here;
+        students, librarians and visitors sign up on the registration page. New librarians wait as <em>Pending</em> until you approve them.</p>
+
+      <div id="userMessage" class="message"></div>
+
+      <div class="row">
+        <!-- CREATE / UPDATE form -->
+        <div class="col">
+          <div class="card">
+            <h3 id="userFormTitle">Add New User</h3>
+            <form id="userForm" onsubmit="return saveUser()">
+              <fieldset>
+                <legend>User Details</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="userName">Full Name:</label></td>
+                    <td>
+                      <input type="text" id="userName" placeholder="e.g. Nadia Islam">
+                      <span class="error" id="userNameError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="userUsername">Username:</label></td>
+                    <td>
+                      <input type="text" id="userUsername" placeholder="At least 4 characters">
+                      <span class="error" id="userUsernameError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="userEmail">Email:</label></td>
+                    <td>
+                      <input type="email" id="userEmail" placeholder="name@booknest.edu">
+                      <span class="error" id="userEmailError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="userPassword">Password:</label></td>
+                    <td>
+                      <input type="password" id="userPassword" placeholder="At least 8 characters">
+                      <span class="error" id="userPasswordError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="userRole">Role:</label></td>
+                    <td>
+                      <select id="userRole">
+                        <option value="">-- Select Role --</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Librarian">Librarian</option>
+                        <option value="Student">Student</option>
+                        <option value="Visitor">Visitor</option>
+                      </select>
+                      <span class="error" id="userRoleError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Status:</td>
+                    <td>
+                      <input type="radio" id="statusActive" name="userStatus" value="Active" checked>
+                      <label for="statusActive" class="option-label">Active</label>
+                      <input type="radio" id="statusBlocked" name="userStatus" value="Blocked">
+                      <label for="statusBlocked" class="option-label">Blocked</label>
+                      <input type="radio" id="statusPending" name="userStatus" value="Pending">
+                      <label for="statusPending" class="option-label">Pending</label>
+                    </td>
+                  </tr>
+                </table>
+              </fieldset>
+              <input type="submit" id="userSaveButton" class="btn" value="Add User">
+              <button type="button" class="btn btn-secondary" onclick="resetUserForm()">Cancel</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- READ + SEARCH table -->
+        <div class="col-wide">
+          <div class="card">
+            <h3>All Users</h3>
+            <div class="search-bar">
+              <input type="text" id="userSearch" placeholder="Search by name, username, email or id..." onkeyup="renderUsers()">
+              <select id="userRoleFilter" onchange="renderUsers()">
+                <option value="All">All roles</option>
+                <option value="Admin">Admin</option>
+                <option value="Librarian">Librarian</option>
+                <option value="Student">Student</option>
+                <option value="Visitor">Visitor</option>
+              </select>
+              <select id="userStatusFilter" onchange="renderUsers()">
+                <option value="All">Any status</option>
+                <option value="Active">Active</option>
+                <option value="Blocked">Blocked</option>
+                <option value="Pending">Pending approval</option>
+              </select>
+            </div>
+            <p class="result-count" id="userCount"></p>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="userTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         UNIQUE FEATURE 2: LIBRARY RULES SETTINGS
+         ========================================================= -->
+    <section id="rulesSection" class="page-section">
+      <h2 class="page-title">Library Rules</h2>
+      <p class="page-subtitle">Set the fine, loan period and borrowing limits for the whole library.</p>
+
+      <div id="rulesMessage" class="message"></div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3>Change rules</h3>
+            <form onsubmit="return saveRules()">
+              <fieldset>
+                <legend>Borrowing rules</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="ruleFine">Fine per late day (Tk):</label></td>
+                    <td>
+                      <input type="number" id="ruleFine" min="0" max="100" onchange="previewRules()" onkeyup="previewRules()">
+                      <span class="error" id="ruleFineError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="ruleLoanDays">Loan period (days):</label></td>
+                    <td>
+                      <input type="number" id="ruleLoanDays" min="1" max="60" onchange="previewRules()" onkeyup="previewRules()">
+                      <span class="error" id="ruleLoanDaysError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="ruleMaxBooks">Max books per student:</label></td>
+                    <td>
+                      <input type="number" id="ruleMaxBooks" min="1" max="10">
+                      <span class="error" id="ruleMaxBooksError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="ruleRenewDays">Days added on renewal:</label></td>
+                    <td>
+                      <input type="number" id="ruleRenewDays" min="1" max="30">
+                      <span class="error" id="ruleRenewDaysError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="ruleMaxRenewals">Renewals allowed per loan:</label></td>
+                    <td>
+                      <input type="number" id="ruleMaxRenewals" min="0" max="5">
+                      <span class="error" id="ruleMaxRenewalsError"></span>
+                    </td>
+                  </tr>
+                </table>
+              </fieldset>
+              <input type="submit" class="btn" value="Save Rules">
+              <button type="button" class="btn btn-secondary" onclick="restoreDefaultRules()">Restore Defaults</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card">
+            <h3>Rules in use now</h3>
+            <table class="data-table">
+              <tbody id="currentRulesBody"></tbody>
+            </table>
+            <div class="result-box">
+              <p><strong>Preview:</strong> with the values in the form,</p>
+              <p id="rulesPreview"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================
+         UNIQUE FEATURE 3: ACTIVITY LOG MONITOR
+         A scrolling notice board (Lecture 02, Exercise 4)
+         ========================================================= -->
+    <section id="logSection" class="page-section">
+      <h2 class="page-title">Activity Log</h2>
+      <p class="page-subtitle">Every important action in the system, newest first.</p>
+
+      <div class="card">
+        <div class="search-bar">
+          <select id="logTypeFilter" onchange="renderLog()">
+            <option value="All">All activity types</option>
+            <option value="User">User</option>
+            <option value="Book">Book</option>
+            <option value="Loan">Loan</option>
+            <option value="Security">Security</option>
+            <option value="Settings">Settings</option>
+          </select>
+          <select id="logUserFilter" onchange="renderLog()">
+            <option value="All">Done by anyone</option>
+            <option value="admin">admin</option>
+            <option value="librarian">librarian</option>
+          </select>
+          <button type="button" class="btn btn-danger" onclick="clearLog()">Clear Log</button>
+        </div>
+        <p class="result-count" id="logCount"></p>
+        <div class="notice-board" id="logBoard"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    &copy; 2026 BookNest Library &middot; CSC 3215 Web Technologies
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
